@@ -1,7 +1,8 @@
-"""Shared base class for AgentMail-backed LangChain tools."""
+"""Shared base class and helpers for AgentMail-backed LangChain tools."""
 
 from __future__ import annotations
 
+import json
 from typing import Any, Optional
 
 from langchain_core.tools import BaseTool
@@ -22,6 +23,10 @@ class AgentMailBaseTool(BaseTool):
     @property
     def sdk(self) -> Any:
         return self.client.sdk
+
+    def _format(self, resp: Any) -> str:
+        """Dump an SDK response into a JSON string an LLM can consume."""
+        return json.dumps(_model_dump(resp), default=str)
 
 
 def _format_error(e: Exception) -> str:

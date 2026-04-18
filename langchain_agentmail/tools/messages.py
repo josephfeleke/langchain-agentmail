@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Type
 
 from pydantic import BaseModel, Field
 
@@ -13,6 +13,7 @@ from langchain_agentmail.tools.base import (
     _model_dump,
     _truncate,
 )
+from langchain_agentmail.tools.schemas import Addresses
 
 
 class _ListMessagesInput(BaseModel):
@@ -60,7 +61,7 @@ class AgentMailListMessagesTool(AgentMailBaseTool):
                 if v is not None
             }
             resp = self.sdk.inboxes.messages.list(inbox_id=inbox_id, **kwargs)
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)
 
@@ -94,9 +95,6 @@ class AgentMailGetMessageTool(AgentMailBaseTool):
             return json.dumps(dumped, default=str)
         except Exception as e:
             return _format_error(e)
-
-
-Addresses = Union[str, List[str]]
 
 
 class _SendMessageInput(BaseModel):
@@ -154,7 +152,7 @@ class AgentMailSendTool(AgentMailBaseTool):
                 if v is not None
             }
             resp = self.sdk.inboxes.messages.send(inbox_id=inbox_id, **kwargs)
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)
 
@@ -218,7 +216,7 @@ class AgentMailReplyTool(AgentMailBaseTool):
             resp = self.sdk.inboxes.messages.reply(
                 inbox_id=inbox_id, message_id=message_id, **kwargs
             )
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)
 
@@ -264,6 +262,6 @@ class AgentMailUpdateMessageLabelsTool(AgentMailBaseTool):
             resp = self.sdk.inboxes.messages.update(
                 inbox_id=inbox_id, message_id=message_id, **kwargs
             )
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)

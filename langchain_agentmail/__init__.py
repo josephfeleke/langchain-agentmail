@@ -1,5 +1,6 @@
 """LangChain integration for AgentMail."""
 
+from langchain_agentmail._version import __version__
 from langchain_agentmail.client import AgentMailClient
 from langchain_agentmail.toolkit import AgentMailToolkit
 from langchain_agentmail.tools import (
@@ -15,6 +16,7 @@ from langchain_agentmail.tools import (
 )
 
 __all__ = [
+    "__version__",
     "AgentMailClient",
     "AgentMailToolkit",
     "AgentMailCreateInboxTool",
@@ -27,5 +29,3 @@ __all__ = [
     "AgentMailSendTool",
     "AgentMailUpdateMessageLabelsTool",
 ]
-
-__version__ = "0.1.0"

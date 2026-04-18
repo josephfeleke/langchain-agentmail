@@ -2,16 +2,11 @@
 
 from __future__ import annotations
 
-import json
 from typing import Optional, Type
 
 from pydantic import BaseModel, Field
 
-from langchain_agentmail.tools.base import (
-    AgentMailBaseTool,
-    _format_error,
-    _model_dump,
-)
+from langchain_agentmail.tools.base import AgentMailBaseTool, _format_error
 
 
 class _ListInboxesInput(BaseModel):
@@ -45,7 +40,7 @@ class AgentMailListInboxesTool(AgentMailBaseTool):
             if page_token is not None:
                 kwargs["page_token"] = page_token
             resp = self.sdk.inboxes.list(**kwargs)
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)
 
@@ -96,6 +91,6 @@ class AgentMailCreateInboxTool(AgentMailBaseTool):
                 if v is not None
             }
             resp = self.sdk.inboxes.create(**kwargs) if kwargs else self.sdk.inboxes.create()
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)

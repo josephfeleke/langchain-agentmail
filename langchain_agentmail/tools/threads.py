@@ -69,7 +69,7 @@ class AgentMailListThreadsTool(AgentMailBaseTool):
                 if v is not None
             }
             resp = self.sdk.threads.list(**kwargs)
-            return json.dumps(_model_dump(resp), default=str)
+            return self._format(resp)
         except Exception as e:
             return _format_error(e)
 
