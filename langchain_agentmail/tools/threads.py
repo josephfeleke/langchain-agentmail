@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from typing import List, Optional, Type
 
 from pydantic import BaseModel, Field
 
@@ -16,23 +15,21 @@ from langchain_agentmail.tools.base import (
 
 
 class _ListThreadsInput(BaseModel):
-    limit: Optional[int] = Field(default=None, description="Max threads to return.")
-    page_token: Optional[str] = Field(default=None, description="Pagination token.")
-    labels: Optional[List[str]] = Field(
+    limit: int | None = Field(default=None, description="Max threads to return.")
+    page_token: str | None = Field(default=None, description="Pagination token.")
+    labels: list[str] | None = Field(
         default=None,
         description="Filter to threads having any of these labels (e.g. ['inbox', 'unread']).",
     )
-    before: Optional[str] = Field(
+    before: str | None = Field(
         default=None,
         description="ISO-8601 timestamp; only threads before this are returned.",
     )
-    after: Optional[str] = Field(
+    after: str | None = Field(
         default=None,
         description="ISO-8601 timestamp; only threads after this are returned.",
     )
-    ascending: Optional[bool] = Field(
-        default=None, description="Sort oldest-first when true."
-    )
+    ascending: bool | None = Field(default=None, description="Sort oldest-first when true.")
 
 
 class AgentMailListThreadsTool(AgentMailBaseTool):
@@ -44,16 +41,16 @@ class AgentMailListThreadsTool(AgentMailBaseTool):
         "agentmail_get_thread with a specific thread_id to read the full "
         "conversation."
     )
-    args_schema: Type[BaseModel] = _ListThreadsInput
+    args_schema: type[BaseModel] = _ListThreadsInput
 
     def _run(
         self,
-        limit: Optional[int] = None,
-        page_token: Optional[str] = None,
-        labels: Optional[List[str]] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        ascending: Optional[bool] = None,
+        limit: int | None = None,
+        page_token: str | None = None,
+        labels: list[str] | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        ascending: bool | None = None,
     ) -> str:
         try:
             kwargs = {
@@ -85,7 +82,7 @@ class AgentMailGetThreadTool(AgentMailBaseTool):
         "message's text body. Use after agentmail_list_threads narrows down "
         "which conversation you care about."
     )
-    args_schema: Type[BaseModel] = _GetThreadInput
+    args_schema: type[BaseModel] = _GetThreadInput
 
     def _run(self, thread_id: str) -> str:
         try:

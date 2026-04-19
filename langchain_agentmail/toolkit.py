@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
-
 from langchain_core.tools import BaseTool, BaseToolkit
-from pydantic import Field
+from pydantic import ConfigDict, Field
 
 from langchain_agentmail.client import AgentMailClient
 from langchain_agentmail.tools import (
@@ -20,7 +18,7 @@ from langchain_agentmail.tools import (
     AgentMailUpdateMessageLabelsTool,
 )
 
-_ALL_TOOL_CLASSES = [
+_ALL_TOOL_CLASSES: list[type[BaseTool]] = [
     AgentMailListInboxesTool,
     AgentMailCreateInboxTool,
     AgentMailListThreadsTool,
@@ -37,15 +35,15 @@ class AgentMailToolkit(BaseToolkit):
     """Bundle of AgentMail tools wired to a single shared client."""
 
     client: AgentMailClient = Field(default_factory=AgentMailClient)
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @classmethod
     def from_api_key(
         cls,
-        api_key: Optional[str] = None,
-        base_url: Optional[str] = None,
-    ) -> "AgentMailToolkit":
+        api_key: str | None = None,
+        base_url: str | None = None,
+    ) -> AgentMailToolkit:
         return cls(client=AgentMailClient(api_key=api_key, base_url=base_url))
 
-    def get_tools(self) -> List[BaseTool]:
+    def get_tools(self) -> list[BaseTool]:
         return [cls(client=self.client) for cls in _ALL_TOOL_CLASSES]

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from typing import List, Optional, Type
 
 from pydantic import BaseModel, Field
 
@@ -18,14 +17,14 @@ from langchain_agentmail.tools.schemas import Addresses
 
 class _ListMessagesInput(BaseModel):
     inbox_id: str = Field(description="Inbox to list messages from.")
-    limit: Optional[int] = Field(default=None, description="Max messages to return.")
-    page_token: Optional[str] = Field(default=None, description="Pagination token.")
-    labels: Optional[List[str]] = Field(
+    limit: int | None = Field(default=None, description="Max messages to return.")
+    page_token: str | None = Field(default=None, description="Pagination token.")
+    labels: list[str] | None = Field(
         default=None, description="Filter by labels (e.g. ['inbox', 'unread'])."
     )
-    before: Optional[str] = Field(default=None, description="ISO-8601 upper bound.")
-    after: Optional[str] = Field(default=None, description="ISO-8601 lower bound.")
-    ascending: Optional[bool] = Field(default=None, description="Oldest-first ordering.")
+    before: str | None = Field(default=None, description="ISO-8601 upper bound.")
+    after: str | None = Field(default=None, description="ISO-8601 lower bound.")
+    ascending: bool | None = Field(default=None, description="Oldest-first ordering.")
 
 
 class AgentMailListMessagesTool(AgentMailBaseTool):
@@ -35,17 +34,17 @@ class AgentMailListMessagesTool(AgentMailBaseTool):
         "items (message_id, from, to, subject, preview) — fetch the full body "
         "with agentmail_get_message."
     )
-    args_schema: Type[BaseModel] = _ListMessagesInput
+    args_schema: type[BaseModel] = _ListMessagesInput
 
     def _run(
         self,
         inbox_id: str,
-        limit: Optional[int] = None,
-        page_token: Optional[str] = None,
-        labels: Optional[List[str]] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        ascending: Optional[bool] = None,
+        limit: int | None = None,
+        page_token: str | None = None,
+        labels: list[str] | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        ascending: bool | None = None,
     ) -> str:
         try:
             kwargs = {
@@ -77,13 +76,11 @@ class AgentMailGetMessageTool(AgentMailBaseTool):
         "Fetch a single message with its full plain-text body, sender, "
         "recipients, and metadata. HTML content is stripped to save tokens."
     )
-    args_schema: Type[BaseModel] = _GetMessageInput
+    args_schema: type[BaseModel] = _GetMessageInput
 
     def _run(self, inbox_id: str, message_id: str) -> str:
         try:
-            resp = self.sdk.inboxes.messages.get(
-                inbox_id=inbox_id, message_id=message_id
-            )
+            resp = self.sdk.inboxes.messages.get(inbox_id=inbox_id, message_id=message_id)
             dumped = _model_dump(resp)
             if isinstance(dumped, dict):
                 dumped.pop("html", None)
@@ -100,15 +97,13 @@ class AgentMailGetMessageTool(AgentMailBaseTool):
 class _SendMessageInput(BaseModel):
     inbox_id: str = Field(description="Inbox to send the message from.")
     to: Addresses = Field(description="Recipient email(s).")
-    subject: Optional[str] = Field(default=None, description="Message subject.")
-    text: Optional[str] = Field(default=None, description="Plain-text body.")
-    html: Optional[str] = Field(default=None, description="HTML body.")
-    cc: Optional[Addresses] = Field(default=None, description="CC recipient(s).")
-    bcc: Optional[Addresses] = Field(default=None, description="BCC recipient(s).")
-    reply_to: Optional[Addresses] = Field(
-        default=None, description="Reply-To header value."
-    )
-    labels: Optional[List[str]] = Field(
+    subject: str | None = Field(default=None, description="Message subject.")
+    text: str | None = Field(default=None, description="Plain-text body.")
+    html: str | None = Field(default=None, description="HTML body.")
+    cc: Addresses | None = Field(default=None, description="CC recipient(s).")
+    bcc: Addresses | None = Field(default=None, description="BCC recipient(s).")
+    reply_to: Addresses | None = Field(default=None, description="Reply-To header value.")
+    labels: list[str] | None = Field(
         default=None, description="Labels to attach to the sent message."
     )
 
@@ -120,19 +115,19 @@ class AgentMailSendTool(AgentMailBaseTool):
         "of text or html; subject is strongly recommended. Returns the "
         "message_id and thread_id of the sent message."
     )
-    args_schema: Type[BaseModel] = _SendMessageInput
+    args_schema: type[BaseModel] = _SendMessageInput
 
     def _run(
         self,
         inbox_id: str,
         to: Addresses,
-        subject: Optional[str] = None,
-        text: Optional[str] = None,
-        html: Optional[str] = None,
-        cc: Optional[Addresses] = None,
-        bcc: Optional[Addresses] = None,
-        reply_to: Optional[Addresses] = None,
-        labels: Optional[List[str]] = None,
+        subject: str | None = None,
+        text: str | None = None,
+        html: str | None = None,
+        cc: Addresses | None = None,
+        bcc: Addresses | None = None,
+        reply_to: Addresses | None = None,
+        labels: list[str] | None = None,
     ) -> str:
         if text is None and html is None:
             return "Error: must provide at least one of `text` or `html`."
@@ -160,20 +155,18 @@ class AgentMailSendTool(AgentMailBaseTool):
 class _ReplyInput(BaseModel):
     inbox_id: str = Field(description="Inbox that owns the message being replied to.")
     message_id: str = Field(description="Message to reply to.")
-    text: Optional[str] = Field(default=None, description="Plain-text reply body.")
-    html: Optional[str] = Field(default=None, description="HTML reply body.")
-    reply_all: Optional[bool] = Field(
+    text: str | None = Field(default=None, description="Plain-text reply body.")
+    html: str | None = Field(default=None, description="HTML reply body.")
+    reply_all: bool | None = Field(
         default=None, description="Reply to everyone on the original thread."
     )
-    to: Optional[Addresses] = Field(
+    to: Addresses | None = Field(
         default=None,
         description="Override the reply recipients. Omit to reply to the sender.",
     )
-    cc: Optional[Addresses] = Field(default=None, description="CC override.")
-    bcc: Optional[Addresses] = Field(default=None, description="BCC override.")
-    labels: Optional[List[str]] = Field(
-        default=None, description="Labels for the reply."
-    )
+    cc: Addresses | None = Field(default=None, description="CC override.")
+    bcc: Addresses | None = Field(default=None, description="BCC override.")
+    labels: list[str] | None = Field(default=None, description="Labels for the reply.")
 
 
 class AgentMailReplyTool(AgentMailBaseTool):
@@ -183,19 +176,19 @@ class AgentMailReplyTool(AgentMailBaseTool):
         "intact by sending with the right In-Reply-To headers. Use after "
         "agentmail_get_message to read what you're replying to."
     )
-    args_schema: Type[BaseModel] = _ReplyInput
+    args_schema: type[BaseModel] = _ReplyInput
 
     def _run(
         self,
         inbox_id: str,
         message_id: str,
-        text: Optional[str] = None,
-        html: Optional[str] = None,
-        reply_all: Optional[bool] = None,
-        to: Optional[Addresses] = None,
-        cc: Optional[Addresses] = None,
-        bcc: Optional[Addresses] = None,
-        labels: Optional[List[str]] = None,
+        text: str | None = None,
+        html: str | None = None,
+        reply_all: bool | None = None,
+        to: Addresses | None = None,
+        cc: Addresses | None = None,
+        bcc: Addresses | None = None,
+        labels: list[str] | None = None,
     ) -> str:
         if text is None and html is None:
             return "Error: must provide at least one of `text` or `html`."
@@ -224,12 +217,8 @@ class AgentMailReplyTool(AgentMailBaseTool):
 class _UpdateLabelsInput(BaseModel):
     inbox_id: str = Field(description="Inbox containing the message.")
     message_id: str = Field(description="Message to relabel.")
-    add_labels: Optional[List[str]] = Field(
-        default=None, description="Labels to add."
-    )
-    remove_labels: Optional[List[str]] = Field(
-        default=None, description="Labels to remove."
-    )
+    add_labels: list[str] | None = Field(default=None, description="Labels to add.")
+    remove_labels: list[str] | None = Field(default=None, description="Labels to remove.")
 
 
 class AgentMailUpdateMessageLabelsTool(AgentMailBaseTool):
@@ -239,14 +228,14 @@ class AgentMailUpdateMessageLabelsTool(AgentMailBaseTool):
         "handled, archived, or flagging follow-ups. System labels (sent, "
         "received, trash, etc.) cannot be modified."
     )
-    args_schema: Type[BaseModel] = _UpdateLabelsInput
+    args_schema: type[BaseModel] = _UpdateLabelsInput
 
     def _run(
         self,
         inbox_id: str,
         message_id: str,
-        add_labels: Optional[List[str]] = None,
-        remove_labels: Optional[List[str]] = None,
+        add_labels: list[str] | None = None,
+        remove_labels: list[str] | None = None,
     ) -> str:
         if not add_labels and not remove_labels:
             return "Error: provide at least one of add_labels or remove_labels."

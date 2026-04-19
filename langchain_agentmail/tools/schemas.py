@@ -7,6 +7,4 @@ across send, reply, draft-create, and draft-update surfaces.
 
 from __future__ import annotations
 
-from typing import List, Union
-
-Addresses = Union[str, List[str]]
+Addresses = str | list[str]

@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import asyncio
 import json
-from typing import Any, Optional
+from typing import Any
 
 from langchain_core.tools import BaseTool
-from pydantic import Field
+from pydantic import ConfigDict, Field
 
 from langchain_agentmail.client import AgentMailClient
 
@@ -17,9 +17,8 @@ class AgentMailBaseTool(BaseTool):
 
     client: AgentMailClient = Field(default_factory=AgentMailClient)
 
-    # BaseTool uses pydantic v2 under the hood; this allows the non-pydantic
-    # AgentMailClient to be stored as a field.
-    model_config = {"arbitrary_types_allowed": True}
+    # `arbitrary_types_allowed` lets us store the non-pydantic AgentMailClient.
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @property
     def sdk(self) -> Any:
@@ -65,7 +64,7 @@ def _model_dump(obj: Any) -> Any:
     return obj
 
 
-def _truncate(value: Optional[str], limit: int = 2000) -> Optional[str]:
+def _truncate(value: str | None, limit: int = 2000) -> str | None:
     if value is None:
         return None
     if len(value) <= limit:
