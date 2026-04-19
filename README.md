@@ -52,6 +52,10 @@ print(result["messages"][-1].content)
 | `agentmail_send_message` | Send a new email. |
 | `agentmail_reply_to_message` | Reply inside the same thread (with optional reply-all). |
 | `agentmail_update_message_labels` | Add or remove labels (e.g. archive a message). |
+| `agentmail_create_draft` | Stage a message to send later (or on a schedule). |
+| `agentmail_update_draft` | Revise a staged draft. |
+| `agentmail_send_draft` | Ship a staged draft as a real message. |
+| `agentmail_delete_draft` | Discard a staged draft. |
 
 HTML bodies are stripped and long text is truncated before returning to the
 model, so a single thread won't eat your whole context window.

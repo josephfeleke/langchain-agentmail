@@ -7,14 +7,18 @@ from pydantic import ConfigDict, Field
 
 from langchain_agentmail.client import AgentMailClient
 from langchain_agentmail.tools import (
+    AgentMailCreateDraftTool,
     AgentMailCreateInboxTool,
+    AgentMailDeleteDraftTool,
     AgentMailGetMessageTool,
     AgentMailGetThreadTool,
     AgentMailListInboxesTool,
     AgentMailListMessagesTool,
     AgentMailListThreadsTool,
     AgentMailReplyTool,
+    AgentMailSendDraftTool,
     AgentMailSendTool,
+    AgentMailUpdateDraftTool,
     AgentMailUpdateMessageLabelsTool,
 )
 
@@ -28,6 +32,10 @@ _ALL_TOOL_CLASSES: list[type[BaseTool]] = [
     AgentMailSendTool,
     AgentMailReplyTool,
     AgentMailUpdateMessageLabelsTool,
+    AgentMailCreateDraftTool,
+    AgentMailUpdateDraftTool,
+    AgentMailSendDraftTool,
+    AgentMailDeleteDraftTool,
 ]
 
 
