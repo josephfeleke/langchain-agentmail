@@ -12,7 +12,8 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from langchain_agentmail.tools.base import AgentMailBaseTool, _format_error
-from langchain_agentmail.tools.schemas import Addresses
+from langchain_agentmail.tools.messages import _serialize_attachments
+from langchain_agentmail.tools.schemas import Addresses, SendAttachmentSpec
 
 
 class _CreateDraftInput(BaseModel):
@@ -33,6 +34,10 @@ class _CreateDraftInput(BaseModel):
         default=None,
         description="ISO-8601 timestamp to schedule the draft for.",
     )
+    attachments: list[SendAttachmentSpec] | None = Field(
+        default=None,
+        description="Files to attach. Each must set `content` (base64) OR `url`.",
+    )
 
 
 class AgentMailCreateDraftTool(AgentMailBaseTool):
@@ -47,6 +52,10 @@ class AgentMailCreateDraftTool(AgentMailBaseTool):
     def _run(self, inbox_id: str, **fields: Any) -> str:
         try:
             kwargs = {k: v for k, v in fields.items() if v is not None}
+            if "attachments" in kwargs:
+                kwargs["attachments"] = _serialize_attachments(kwargs["attachments"])
+                if kwargs["attachments"] is None:
+                    kwargs.pop("attachments")
             resp = self.sdk.inboxes.drafts.create(inbox_id=inbox_id, **kwargs)
             return self._format(resp)
         except Exception as e:

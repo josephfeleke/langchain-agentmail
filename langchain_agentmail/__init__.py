@@ -7,6 +7,7 @@ from langchain_agentmail.tools import (
     AgentMailCreateDraftTool,
     AgentMailCreateInboxTool,
     AgentMailDeleteDraftTool,
+    AgentMailGetAttachmentTool,
     AgentMailGetMessageTool,
     AgentMailGetThreadTool,
     AgentMailListInboxesTool,
@@ -18,12 +19,14 @@ from langchain_agentmail.tools import (
     AgentMailUpdateDraftTool,
     AgentMailUpdateMessageLabelsTool,
 )
+from langchain_agentmail.tools.schemas import SendAttachmentSpec
 
 __all__ = [
     "AgentMailClient",
     "AgentMailCreateDraftTool",
     "AgentMailCreateInboxTool",
     "AgentMailDeleteDraftTool",
+    "AgentMailGetAttachmentTool",
     "AgentMailGetMessageTool",
     "AgentMailGetThreadTool",
     "AgentMailListInboxesTool",
@@ -35,5 +38,6 @@ __all__ = [
     "AgentMailToolkit",
     "AgentMailUpdateDraftTool",
     "AgentMailUpdateMessageLabelsTool",
+    "SendAttachmentSpec",
     "__version__",
 ]

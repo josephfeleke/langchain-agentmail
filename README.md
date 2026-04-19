@@ -56,6 +56,7 @@ print(result["messages"][-1].content)
 | `agentmail_update_draft` | Revise a staged draft. |
 | `agentmail_send_draft` | Ship a staged draft as a real message. |
 | `agentmail_delete_draft` | Discard a staged draft. |
+| `agentmail_get_attachment` | Get a presigned URL to download a message attachment. |
 
 HTML bodies are stripped and long text is truncated before returning to the
 model, so a single thread won't eat your whole context window.

@@ -12,7 +12,26 @@ from langchain_agentmail.tools.base import (
     _model_dump,
     _truncate,
 )
-from langchain_agentmail.tools.schemas import Addresses
+from langchain_agentmail.tools.schemas import Addresses, SendAttachmentSpec
+
+
+def _serialize_attachments(
+    attachments: list[SendAttachmentSpec] | list[dict] | None,
+) -> list[dict] | None:
+    """Normalize attachments into plain dicts the SDK accepts.
+
+    Agents can pass `SendAttachmentSpec` instances (typed) or raw dicts
+    (untyped); both paths end up as a list of dicts with `None` fields
+    dropped."""
+    if not attachments:
+        return None
+    out: list[dict] = []
+    for item in attachments:
+        if isinstance(item, SendAttachmentSpec):
+            out.append(item.model_dump(exclude_none=True))
+        else:
+            out.append({k: v for k, v in item.items() if v is not None})
+    return out
 
 
 class _ListMessagesInput(BaseModel):
@@ -106,6 +125,10 @@ class _SendMessageInput(BaseModel):
     labels: list[str] | None = Field(
         default=None, description="Labels to attach to the sent message."
     )
+    attachments: list[SendAttachmentSpec] | None = Field(
+        default=None,
+        description="Files to attach. Each must set `content` (base64) OR `url`.",
+    )
 
 
 class AgentMailSendTool(AgentMailBaseTool):
@@ -128,6 +151,7 @@ class AgentMailSendTool(AgentMailBaseTool):
         bcc: Addresses | None = None,
         reply_to: Addresses | None = None,
         labels: list[str] | None = None,
+        attachments: list[SendAttachmentSpec] | list[dict] | None = None,
     ) -> str:
         if text is None and html is None:
             return "Error: must provide at least one of `text` or `html`."
@@ -143,6 +167,7 @@ class AgentMailSendTool(AgentMailBaseTool):
                     "bcc": bcc,
                     "reply_to": reply_to,
                     "labels": labels,
+                    "attachments": _serialize_attachments(attachments),
                 }.items()
                 if v is not None
             }
@@ -167,6 +192,10 @@ class _ReplyInput(BaseModel):
     cc: Addresses | None = Field(default=None, description="CC override.")
     bcc: Addresses | None = Field(default=None, description="BCC override.")
     labels: list[str] | None = Field(default=None, description="Labels for the reply.")
+    attachments: list[SendAttachmentSpec] | None = Field(
+        default=None,
+        description="Files to attach. Each must set `content` (base64) OR `url`.",
+    )
 
 
 class AgentMailReplyTool(AgentMailBaseTool):
@@ -189,6 +218,7 @@ class AgentMailReplyTool(AgentMailBaseTool):
         cc: Addresses | None = None,
         bcc: Addresses | None = None,
         labels: list[str] | None = None,
+        attachments: list[SendAttachmentSpec] | list[dict] | None = None,
     ) -> str:
         if text is None and html is None:
             return "Error: must provide at least one of `text` or `html`."
@@ -203,6 +233,7 @@ class AgentMailReplyTool(AgentMailBaseTool):
                     "cc": cc,
                     "bcc": bcc,
                     "labels": labels,
+                    "attachments": _serialize_attachments(attachments),
                 }.items()
                 if v is not None
             }

@@ -1,5 +1,6 @@
 """LangChain tools backed by the AgentMail API."""
 
+from langchain_agentmail.tools.attachments import AgentMailGetAttachmentTool
 from langchain_agentmail.tools.drafts import (
     AgentMailCreateDraftTool,
     AgentMailDeleteDraftTool,
@@ -26,6 +27,7 @@ __all__ = [
     "AgentMailCreateDraftTool",
     "AgentMailCreateInboxTool",
     "AgentMailDeleteDraftTool",
+    "AgentMailGetAttachmentTool",
     "AgentMailGetMessageTool",
     "AgentMailGetThreadTool",
     "AgentMailListInboxesTool",
