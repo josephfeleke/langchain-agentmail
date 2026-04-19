@@ -132,6 +132,12 @@ adding new schema fields won't break your handler.
 - [`examples/send_one_email.py`](examples/send_one_email.py) — the shortest
   possible "send one email" script.
 
+## Docs
+
+- **[Quickstart](docs/quickstart.md)** — create an inbox, build a LangGraph
+  triage agent, retrieve by keyword, and wire up webhooks.
+- **[Changelog](CHANGELOG.md)** — what changed between releases.
+
 ## Development
 
 This repo uses [`uv`](https://docs.astral.sh/uv/) + hatchling.
@@ -145,6 +151,12 @@ uv run pytest tests/unit_tests -v
 
 Unit tests mock the AgentMail SDK, so they don't need a live API key. The CI
 matrix runs lint + mypy + pytest on Python 3.10–3.13 for every PR.
+
+## Releasing
+
+Releases are published to PyPI via the `release` GitHub Actions workflow
+(Trusted Publisher OIDC, no long-lived tokens). Bump `_version.py`, tag,
+then run `gh workflow run release.yml -f target=pypi`.
 
 ## License
 
