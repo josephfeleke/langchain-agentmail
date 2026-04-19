@@ -95,6 +95,36 @@ send.invoke({
 })
 ```
 
+## Inbound email via webhooks
+
+Install the extra:
+
+```bash
+pip install 'langchain-agentmail[webhooks]'
+```
+
+Then mount the provided FastAPI router:
+
+```python
+from fastapi import FastAPI
+from langchain_agentmail.webhooks import AgentMailEvent, create_fastapi_router
+
+async def on_event(event: AgentMailEvent) -> None:
+    if event.event_type == "message.received":
+        # drive your LangGraph agent here
+        ...
+
+app = FastAPI()
+app.include_router(
+    create_fastapi_router(on_event),  # reads AGENTMAIL_WEBHOOK_SECRET
+    prefix="/agentmail",
+)
+```
+
+Signature verification is on by default (svix-compatible); bad signatures
+return `401`. Pydantic event models preserve unknown fields so AgentMail
+adding new schema fields won't break your handler.
+
 ## Examples
 
 - [`examples/triage_agent.py`](examples/triage_agent.py) — a ReAct agent that
