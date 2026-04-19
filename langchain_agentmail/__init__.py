@@ -2,6 +2,8 @@
 
 from langchain_agentmail._version import __version__
 from langchain_agentmail.client import AgentMailClient
+from langchain_agentmail.loaders import AgentMailLoader
+from langchain_agentmail.retrievers import AgentMailRetriever
 from langchain_agentmail.toolkit import AgentMailToolkit
 from langchain_agentmail.tools import (
     AgentMailCreateDraftTool,
@@ -32,7 +34,9 @@ __all__ = [
     "AgentMailListInboxesTool",
     "AgentMailListMessagesTool",
     "AgentMailListThreadsTool",
+    "AgentMailLoader",
     "AgentMailReplyTool",
+    "AgentMailRetriever",
     "AgentMailSendDraftTool",
     "AgentMailSendTool",
     "AgentMailToolkit",

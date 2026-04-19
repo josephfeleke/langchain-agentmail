@@ -61,6 +61,22 @@ print(result["messages"][-1].content)
 HTML bodies are stripped and long text is truncated before returning to the
 model, so a single thread won't eat your whole context window.
 
+## Loading email as LangChain Documents
+
+```python
+from langchain_agentmail import AgentMailLoader, AgentMailRetriever
+
+# Pull every message in an inbox as a list of Documents
+docs = AgentMailLoader(inbox_id="ib_...", labels=["inbox"], limit=50).load()
+
+# Keyword retrieval (no embeddings — use a vector store for semantic search)
+retriever = AgentMailRetriever(inbox_id="ib_...", k=5)
+hits = retriever.invoke("invoice")
+```
+
+Standard metadata keys — `message_id`, `thread_id`, `inbox_id`, `from`, `to`,
+`subject`, `labels`, `timestamp`, `attachments`.
+
 ## Using individual tools
 
 Every tool works on its own if you don't want the whole toolkit:
