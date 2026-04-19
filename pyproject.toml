@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "langchain-agentmail"
-version = "0.1.1"
+dynamic = ["version"]
 description = "LangChain integration for AgentMail — give your agents a real inbox."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -39,3 +39,6 @@ include = ["langchain_agentmail*"]
 
 [tool.setuptools.package-data]
 langchain_agentmail = ["py.typed"]
+
+[tool.setuptools.dynamic]
+version = { attr = "langchain_agentmail._version.__version__" }
