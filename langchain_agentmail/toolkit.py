@@ -10,6 +10,7 @@ from langchain_agentmail.tools import (
     AgentMailCreateDraftTool,
     AgentMailCreateInboxTool,
     AgentMailDeleteDraftTool,
+    AgentMailGetAttachmentTool,
     AgentMailGetMessageTool,
     AgentMailGetThreadTool,
     AgentMailListInboxesTool,
@@ -36,6 +37,7 @@ _ALL_TOOL_CLASSES: list[type[BaseTool]] = [
     AgentMailUpdateDraftTool,
     AgentMailSendDraftTool,
     AgentMailDeleteDraftTool,
+    AgentMailGetAttachmentTool,
 ]
 
 
