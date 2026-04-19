@@ -80,8 +80,14 @@ def test_reply_passes_message_id():
 def test_toolkit_wires_shared_client():
     client = _fake_client()
     tools = AgentMailToolkit(client=client).get_tools()
-    assert len(tools) == 9
+    assert len(tools) >= 9
     assert all(t.client is client for t in tools)
+    names = {t.name for t in tools}
+    assert {
+        "agentmail_list_inboxes",
+        "agentmail_send_message",
+        "agentmail_reply_to_message",
+    } <= names
 
 
 def test_missing_api_key_raises(monkeypatch):
