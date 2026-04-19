@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from typing import Any, Optional
 
@@ -27,6 +28,17 @@ class AgentMailBaseTool(BaseTool):
     def _format(self, resp: Any) -> str:
         """Dump an SDK response into a JSON string an LLM can consume."""
         return json.dumps(_model_dump(resp), default=str)
+
+    async def _arun(self, *args: Any, **kwargs: Any) -> str:
+        """Run the tool on a worker thread so async agents don't stall.
+
+        BaseTool's default `_arun` uses `run_in_executor`; we override with
+        `asyncio.to_thread` because it propagates contextvars correctly — a
+        requirement for LangGraph's callback manager and tracing. Strips the
+        async-only `run_manager` kwarg before dispatching to the sync `_run`.
+        """
+        kwargs.pop("run_manager", None)
+        return await asyncio.to_thread(self._run, *args, **kwargs)
 
 
 def _format_error(e: Exception) -> str:
