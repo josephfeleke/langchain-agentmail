@@ -16,9 +16,7 @@ from langchain_agentmail.tools import (
 )
 
 __all__ = [
-    "__version__",
     "AgentMailClient",
-    "AgentMailToolkit",
     "AgentMailCreateInboxTool",
     "AgentMailGetMessageTool",
     "AgentMailGetThreadTool",
@@ -27,5 +25,7 @@ __all__ = [
     "AgentMailListThreadsTool",
     "AgentMailReplyTool",
     "AgentMailSendTool",
+    "AgentMailToolkit",
     "AgentMailUpdateMessageLabelsTool",
+    "__version__",
 ]

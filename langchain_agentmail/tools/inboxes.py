@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Type
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -10,11 +10,11 @@ from langchain_agentmail.tools.base import AgentMailBaseTool, _format_error
 
 
 class _ListInboxesInput(BaseModel):
-    limit: Optional[int] = Field(
+    limit: int | None = Field(
         default=None,
         description="Maximum number of inboxes to return.",
     )
-    page_token: Optional[str] = Field(
+    page_token: str | None = Field(
         default=None, description="Opaque pagination token from a previous response."
     )
 
@@ -26,15 +26,15 @@ class AgentMailListInboxesTool(AgentMailBaseTool):
         "with inbox_id, email, and display_name for each inbox. Use this first "
         "when you don't know which inbox_id to operate on."
     )
-    args_schema: Type[BaseModel] = _ListInboxesInput
+    args_schema: type[BaseModel] = _ListInboxesInput
 
     def _run(
         self,
-        limit: Optional[int] = None,
-        page_token: Optional[str] = None,
+        limit: int | None = None,
+        page_token: str | None = None,
     ) -> str:
         try:
-            kwargs = {}
+            kwargs: dict[str, Any] = {}
             if limit is not None:
                 kwargs["limit"] = limit
             if page_token is not None:
@@ -46,18 +46,18 @@ class AgentMailListInboxesTool(AgentMailBaseTool):
 
 
 class _CreateInboxInput(BaseModel):
-    username: Optional[str] = Field(
+    username: str | None = Field(
         default=None,
         description="Local part of the email address. Random if omitted.",
     )
-    domain: Optional[str] = Field(
+    domain: str | None = Field(
         default=None,
         description="Verified domain to use. Defaults to agentmail.to.",
     )
-    display_name: Optional[str] = Field(
+    display_name: str | None = Field(
         default=None, description="Human-readable sender name shown to recipients."
     )
-    client_id: Optional[str] = Field(
+    client_id: str | None = Field(
         default=None,
         description="Your own identifier to tag this inbox with. Useful for "
         "mapping AgentMail inboxes to records in your system.",
@@ -70,14 +70,14 @@ class AgentMailCreateInboxTool(AgentMailBaseTool):
         "Create a new AgentMail inbox that the agent can send and receive "
         "email from. Returns the new inbox's id and email address."
     )
-    args_schema: Type[BaseModel] = _CreateInboxInput
+    args_schema: type[BaseModel] = _CreateInboxInput
 
     def _run(
         self,
-        username: Optional[str] = None,
-        domain: Optional[str] = None,
-        display_name: Optional[str] = None,
-        client_id: Optional[str] = None,
+        username: str | None = None,
+        domain: str | None = None,
+        display_name: str | None = None,
+        client_id: str | None = None,
     ) -> str:
         try:
             kwargs = {

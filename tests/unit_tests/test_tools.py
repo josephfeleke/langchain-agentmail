@@ -22,15 +22,9 @@ def _fake_client() -> AgentMailClient:
             messages=SimpleNamespace(
                 list=MagicMock(return_value={"messages": [], "count": 0}),
                 get=MagicMock(return_value={"message_id": "m_1", "text": "hi"}),
-                send=MagicMock(
-                    return_value={"message_id": "m_2", "thread_id": "t_1"}
-                ),
-                reply=MagicMock(
-                    return_value={"message_id": "m_3", "thread_id": "t_1"}
-                ),
-                update=MagicMock(
-                    return_value={"message_id": "m_1", "labels": ["done"]}
-                ),
+                send=MagicMock(return_value={"message_id": "m_2", "thread_id": "t_1"}),
+                reply=MagicMock(return_value={"message_id": "m_3", "thread_id": "t_1"}),
+                update=MagicMock(return_value={"message_id": "m_1", "labels": ["done"]}),
             ),
         ),
         threads=SimpleNamespace(
@@ -77,9 +71,7 @@ def test_send_happy_path():
 def test_reply_passes_message_id():
     client = _fake_client()
     tool = AgentMailReplyTool(client=client)
-    out = tool.invoke(
-        {"inbox_id": "ib", "message_id": "m_1", "text": "thanks", "reply_all": True}
-    )
+    out = tool.invoke({"inbox_id": "ib", "message_id": "m_1", "text": "thanks", "reply_all": True})
     assert '"thread_id": "t_1"' in out
     call_kwargs = client.sdk.inboxes.messages.reply.call_args.kwargs
     assert call_kwargs["reply_all"] is True

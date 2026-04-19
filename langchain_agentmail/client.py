@@ -10,7 +10,7 @@ The real work happens in the `agentmail` SDK. This wrapper exists so that:
 from __future__ import annotations
 
 import os
-from typing import Any, Optional
+from typing import Any
 
 
 class AgentMailClient:
@@ -18,10 +18,10 @@ class AgentMailClient:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         *,
-        client: Optional[Any] = None,
-        base_url: Optional[str] = None,
+        client: Any | None = None,
+        base_url: str | None = None,
     ) -> None:
         if client is not None:
             self._client = client
@@ -39,8 +39,7 @@ class AgentMailClient:
             from agentmail import AgentMail
         except ImportError as e:
             raise ImportError(
-                "The `agentmail` package is required. Install with "
-                "`pip install agentmail`."
+                "The `agentmail` package is required. Install with `pip install agentmail`."
             ) from e
 
         kwargs: dict[str, Any] = {"api_key": key}

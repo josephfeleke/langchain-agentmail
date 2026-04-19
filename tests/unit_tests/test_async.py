@@ -21,9 +21,7 @@ def _fake_client() -> AgentMailClient:
         inboxes=SimpleNamespace(
             list=MagicMock(return_value={"inboxes": [], "count": 0}),
             messages=SimpleNamespace(
-                send=MagicMock(
-                    return_value={"message_id": "m_async", "thread_id": "t_1"}
-                ),
+                send=MagicMock(return_value={"message_id": "m_async", "thread_id": "t_1"}),
             ),
         ),
         threads=SimpleNamespace(

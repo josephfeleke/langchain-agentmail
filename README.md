@@ -81,14 +81,19 @@ send.invoke({
 - [`examples/send_one_email.py`](examples/send_one_email.py) — the shortest
   possible "send one email" script.
 
-## Testing
+## Development
+
+This repo uses [`uv`](https://docs.astral.sh/uv/) + hatchling.
 
 ```bash
-pip install -e '.[dev]'
-pytest
+uv sync --all-extras --dev
+uv run ruff check .
+uv run mypy langchain_agentmail
+uv run pytest tests/unit_tests -v
 ```
 
-Tests mock the AgentMail SDK, so they don't need a live API key.
+Unit tests mock the AgentMail SDK, so they don't need a live API key. The CI
+matrix runs lint + mypy + pytest on Python 3.10–3.13 for every PR.
 
 ## License
 
