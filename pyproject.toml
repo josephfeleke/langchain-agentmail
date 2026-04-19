@@ -39,6 +39,9 @@ examples = [
     "langchain-openai>=0.2.0",
     "langgraph>=0.2.0",
 ]
+webhooks = [
+    "fastapi>=0.110",
+]
 
 [project.urls]
 Homepage = "https://www.agentmail.to/"
